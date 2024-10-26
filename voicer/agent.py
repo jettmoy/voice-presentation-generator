@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import logging
+from loguru import logger
 from dotenv import load_dotenv
 
 from livekit import rtc
@@ -14,10 +14,10 @@ from livekit.agents import (
 from livekit.agents.multimodal import MultimodalAgent
 from livekit.plugins import openai
 
+from agents.functions import AssistantFnc
+
 
 load_dotenv(dotenv_path=".env.local")
-logger = logging.getLogger("my-worker")
-logger.setLevel(logging.INFO)
 
 
 async def entrypoint(ctx: JobContext):
@@ -30,24 +30,20 @@ async def entrypoint(ctx: JobContext):
 
     logger.info("agent started")
 
-
 def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
     logger.info("starting multimodal agent")
 
     model = openai.realtime.RealtimeModel(
         instructions=(
-            "You are a voice assistant created by LiveKit. Your interface with users will be voice. "
+            "You are a voice assistant created by LiveKit. Your interface with users will be voice and image. "
             "You should use short and concise responses, and avoiding usage of unpronouncable punctuation. "
-            "You were created as a demo to showcase the capabilities of LiveKit's agents framework, "
-            "as well as the ease of development of realtime AI prototypes. You are currently running in a "
-            "LiveKit Sandbox, which is an environment that allows developers to instantly deploy prototypes "
-            "of their realtime AI applications to share with others."
         ),
         modalities=["audio", "text"],
         voice="echo"
     )
-    assistant = MultimodalAgent(model=model)
+    assistant = MultimodalAgent(model=model, fnc_ctx=AssistantFnc())
     assistant.start(ctx.room, participant)
+
 
     session = model.sessions[0]
     session.conversation.item.create(
@@ -57,7 +53,9 @@ def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
             Please begin the interaction with the user in a manner consistent with your instructions.
             Mention that you are a voice assistant working for SDx, operating out of the Launch Factory, before 
             listening for the user's instructions.
-            """,
+            If the user asks for the weather, you should respond with the weather 
+            by calling the get_weather function for the user's location.
+            """
         )
     )
     session.response.create()
