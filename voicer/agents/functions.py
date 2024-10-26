@@ -8,22 +8,22 @@ class AssistantFnc(llm.FunctionContext):
     # the llm.ai_callable decorator marks this function as a tool available to the LLM
     # by default, it'll use the docstring as the function's description
     @llm.ai_callable()
-    async def get_weather(
+    async def analyze_calendar(
         self,
         # by using the Annotated type, arg description and type are available to the LLM
-        location: Annotated[
-            str, llm.TypeInfo(description="The location to get the weather for")
+        question: Annotated[
+            str, llm.TypeInfo(description="A particular question about the calendar")
         ],
     ):
-        """Called when the user asks about the weather. This function will return the weather for the given location."""
-        logger.info(f"getting weather for {location}")
-        url = f"https://wttr.in/{location}?format=%C+%t"
+        """Called when the user asks about what's on the calendar. This function will return information about the calendar."""
+        logger.info("getting calendar info")
+        url = f"http://localhost:5555/calendar"
         async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
+            async with session.post(url, json={"question": question}) as response:
                 if response.status == 200:
-                    weather_data = await response.text()
+                    cal_data = await response.text()
                     # response from the function call is returned to the LLM
                     # as a tool response. The LLM's response will include this data
-                    return f"The weather in {location} is {weather_data}."
+                    return f"The answer to the question is {cal_data}."
                 else:
-                    raise f"Failed to get weather data, status code: {response.status}"
+                    raise f"Failed to get cal data, status code: {response.status}"
