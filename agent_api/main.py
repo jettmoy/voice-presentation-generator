@@ -9,7 +9,7 @@ import base64
 
 from .models import Instructions, Slides, generate_presentation_html
 
-from .agent import chat_agent
+from .agent import chat_agent, call_o3_mini
 
 from icecream import ic
 
@@ -25,11 +25,12 @@ app = FastAPI()
 
 @app.post("/slides")
 async def create_slides(request: Instructions):
-    response = await chat_agent.run(request.instructions)
+    # response = await chat_agent.run(request.instructions)
+    response = await call_o3_mini(request.instructions)
     ic(response)
-    response.slides = generate_presentation_html(response.data.slides)
-    ic(response)
-    return {"response": response.slides}
+    slides = generate_presentation_html(response["data"]["slides"]) #response.data.slides)
+    ic(slides)
+    return {"response": slides}
 
 
 

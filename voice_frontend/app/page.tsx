@@ -16,6 +16,7 @@ import type { ConnectionDetails } from "./api/connection-details/route";
 import { NoAgentNotification } from "@/components/NoAgentNotification";
 import { CloseIcon } from "@/components/CloseIcon";
 import { useKrispNoiseFilter } from "@livekit/components-react/krisp";
+import Slides from "@/components/Slides";
 
 export default function Page() {
   const [connectionDetails, updateConnectionDetails] = useState<
