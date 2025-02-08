@@ -1,11 +1,16 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
+class Message(BaseModel):
+    role: str  # "user" or "assistant"
+    content: str
+
 class Question(BaseModel):
     question: str
 
 class Instructions(BaseModel):
     instructions: str = Field(description="The instructions for the LLM on how to make slides")
+    history: Optional[List[Message]] = []  # Chat history
 
 class SlideContent(BaseModel):
     heading: str = Field(description="Heading of the slide")

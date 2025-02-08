@@ -8,7 +8,7 @@ from pydantic_ai import Agent
 from typing_extensions import TypedDict
 
 from datetime import datetime
-from .models import Slides, Instructions
+from .models import Slides, Instructions, Message
 
 
 
@@ -29,3 +29,14 @@ chat_agent = Agent(
     system_prompt=SYSTEM_PROMPT,
     retries=3
 )
+
+async def chat_with_agent(instructions: str, history: List[Message]):
+    """
+    Calls the agent while maintaining chat history.
+    """
+    messages = [{"role": msg.role, "content": msg.content} for msg in history]
+    messages.append({"role": "user", "content": instructions})
+
+    response = await chat_agent.run(instructions, history=messages)
+
+    return response

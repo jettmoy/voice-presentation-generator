@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from typing import List
 import base64
 
-from .models import Instructions, Slides, generate_presentation_html
+from .models import Instructions, Slides, generate_presentation_html, Message
 
 from .agent import chat_agent
 
@@ -25,11 +25,31 @@ app = FastAPI()
 
 @app.post("/slides")
 async def create_slides(request: Instructions):
-    response = await chat_agent.run(request.instructions)
-    ic(response)
+    # Convert chat history into a structured format
+    history_text = "\n".join([f"{msg.role}: {msg.content}" for msg in request.history])
+    
+    # Combine history and new instructions into a single prompt
+    if history_text:
+        full_prompt = f"{history_text}\nuser: {request.instructions}"
+    else:
+        full_prompt = request.instructions
+
+    # Send the formatted prompt to the chat agent
+    response = await chat_agent.run(full_prompt)
+    
     response.slides = generate_presentation_html(response.data.slides)
-    ic(response)
-    return {"response": response.slides}
+
+    # Convert slides to a readable text format
+    # slides_text = "\n".join([f"{slide.id}. {slide.content}" for slide in response.data.slides])
+
+    # Append the new messages to history
+    request.history.append(Message(role="user", content=request.instructions))
+    request.history.append(Message(role="assistant", content=response.slides))  # Store slides as string
+
+    return {
+        "response": response.slides,  
+        "history": request.history  # Return updated history for follow-ups
+    }
 
 
 
