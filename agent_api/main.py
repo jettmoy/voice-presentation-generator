@@ -7,16 +7,16 @@ from pydantic import BaseModel, Field
 from typing import List
 import base64
 
-from .types import Instructions, Slides, generate_presentation_html
+from .models import Instructions, Slides, generate_presentation_html
 
 from .agent import chat_agent
 
 from icecream import ic
 
-load_dotenv(dotenv_path="../.env.local")
+load_dotenv(dotenv_path=".env.local")
 
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 app = FastAPI()

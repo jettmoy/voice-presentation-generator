@@ -4,11 +4,11 @@ from uuid import uuid4
 from typing import List, Optional, Union
 from pydantic import BaseModel, ValidationError
 
-from pydantic_ai import Agent, RunContext, Tool, ModelRetry
+from pydantic_ai import Agent
 from typing_extensions import TypedDict
 
 from datetime import datetime
-from .types import Slides, Instructions
+from .models import Slides, Instructions
 
 
 
