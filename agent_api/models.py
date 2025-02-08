@@ -38,10 +38,11 @@ def generate_presentation_html(slides: List[Slide]) -> str:
     for slide in slides:
         html += f"<section>"
         html += generate_slide_html(slide.content)
+        
+        # Add bullets as simple paragraphs instead of nested sections
         if slide.children:
             for child in slide.children:
-                html += "<section>"
-                html += generate_slide_html(SlideContent(heading=child.heading, body=child.body))
-                html += "</section>"
+                html += f"<p>{child.body}</p>"
+        
         html += "</section>"
     return html
