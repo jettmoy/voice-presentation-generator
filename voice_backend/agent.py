@@ -17,7 +17,7 @@ from livekit.plugins import openai
 from agents.functions import AssistantFnc
 
 
-load_dotenv(dotenv_path=".env.local")
+load_dotenv(dotenv_path="../.env.local")
 
 
 async def entrypoint(ctx: JobContext):

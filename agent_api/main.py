@@ -8,7 +8,7 @@ import base64
 
 
 
-load_dotenv(dotenv_path=".env.local")
+load_dotenv(dotenv_path="../.env.local")
 
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))

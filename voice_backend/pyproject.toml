@@ -1,0 +1,15 @@
+[project]
+name = "voice-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "livekit-agents~=0.10.1",
+    "livekit>=0.17.1",
+    "livekit-plugins-openai~=0.10.3",
+    "python-dotenv~=1.0",
+    "loguru>=0.7.3",
+    "openai>=1.61.1",
+    "aiohttp>=3.11.12",
+]
