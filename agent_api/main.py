@@ -25,11 +25,18 @@ app = FastAPI()
 
 @app.post("/slides")
 async def create_slides(request: Instructions):
-    # response = await chat_agent.run(request.instructions)
+    # Call O3-mini model to generate slides
     response = await call_o3_mini(request.instructions)
     ic(response)
-    slides = generate_presentation_html(response["data"]["slides"]) #response.data.slides)
+    
+    # Check if there's an error in the response
+    if 'error' in response:
+        return {"error": response['error'], "details": response.get('details', '')}
+    
+    # Generate HTML from the Slides model
+    slides = generate_presentation_html(response['slides'].slides)
     ic(slides)
+    
     return {"response": slides}
 
 

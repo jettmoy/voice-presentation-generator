@@ -8,7 +8,8 @@ from pydantic_ai import Agent
 from typing_extensions import TypedDict
 
 from datetime import datetime
-from .models import Slides, Instructions
+from .models import Slide, SlideContent, Slides
+import uuid
 
 import os
 from openai import OpenAI
@@ -70,8 +71,6 @@ async def call_o3_mini(prompt: str, max_tokens: int = 300) -> Dict[str, Any]:
         response = client.beta.chat.completions.parse(
             model="o3-mini",  # Specify the O3-mini model
             messages=messages,
-            # max_tokens=max_tokens,
-            # temperature=0.7,
             response_format={"type": "json_object"}
         )
         
@@ -81,9 +80,36 @@ async def call_o3_mini(prompt: str, max_tokens: int = 300) -> Dict[str, Any]:
         # Parse the JSON response
         slides_data = json.loads(response_text)
         
+        # Convert JSON to Slides model
+        converted_slides = []
+        for idx, slide_data in enumerate(slides_data.get('slides', []), 1):
+            # Generate a unique ID for each slide
+            slide_id = str(uuid.uuid4())
+            
+            # Create SlideContent
+            slide_content = SlideContent(
+                heading=slide_data.get('title', f'Slide {idx}'),
+                body=slide_data.get('content', '')
+            )
+            
+            # Create Slide with optional children (bullets)
+            slide = Slide(
+                id=slide_id,
+                content=slide_content,
+                children=[
+                    SlideContent(heading='', body=bullet) 
+                    for bullet in slide_data.get('bullets', [])
+                ] if slide_data.get('bullets') else None
+            )
+            
+            converted_slides.append(slide)
+        
+        # Create Slides object
+        slides_model = Slides(slides=converted_slides)
+        
         return {
             "data": slides_data,
-            "slides": slides_data  # Maintain compatibility with existing code
+            "slides": slides_model
         }
     
     except json.JSONDecodeError as je:
