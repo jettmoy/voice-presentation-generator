@@ -27,7 +27,7 @@ app = FastAPI()
 async def create_slides(request: Instructions):
     response = await chat_agent.run(request.instructions)
     ic(response)
-    response.slides = generate_presentation_html(response)
+    response.slides = generate_presentation_html(response.data.slides)
     ic(response)
     return {"response": response.slides}
 

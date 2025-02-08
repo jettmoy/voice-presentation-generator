@@ -22,11 +22,13 @@ class Slides(BaseModel):
 
 
 
-def generate_slide_html(slide: Slide) -> str:
+def generate_slide_html(content: SlideContent) -> str:
     """Recursively generate HTML for a slide and its children."""
     html = ""
-    html += f"<h1>{slide.content.heading}</h1>"
-    html += f"<p>{slide.content.body}</p>"
+    if content.heading:
+        html += f"<h1>{content.heading}</h1>"
+    if content.body:
+        html += f"<p>{content.body}</p>"
 
     return html
 
@@ -35,11 +37,11 @@ def generate_presentation_html(slides: List[Slide]) -> str:
     html = ""
     for slide in slides:
         html += f"<section>"
-        html += generate_slide_html(slide)
+        html += generate_slide_html(slide.content)
         if slide.children:
             for child in slide.children:
                 html += "<section>"
-                html += generate_slide_html(child)
+                html += generate_slide_html(SlideContent(heading=child.heading, body=child.body))
                 html += "</section>"
         html += "</section>"
     return html
