@@ -2,6 +2,7 @@
 
 import Reveal from "reveal.js";
 import { useEffect, useRef } from "react";
+import Script from "next/script";
 
 export function Slides({ slides }: { slides: string }) {
   const deckDivRef = useRef<HTMLDivElement>(null); // reference to deck container div
@@ -14,6 +15,7 @@ export function Slides({ slides }: { slides: string }) {
     deckRef.current = new Reveal(deckDivRef.current!, {
       transition: "slide",
       // other config options
+      //   plugins: [RevealLoadContent],
     });
 
     deckRef.current.initialize().then(() => {
@@ -33,12 +35,12 @@ export function Slides({ slides }: { slides: string }) {
   }, []);
 
   return (
-    // Your presentation is sized based on the width and height of
-    // our parent element. Make sure the parent is not 0-height.
-    <div className="reveal" ref={deckDivRef}>
-      <div className="slides">
-        <div dangerouslySetInnerHTML={{ __html: slides }} />
+    <>
+      {/* <Script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/loadcontent/plugin.js"></Script> */}
+
+      <div className="reveal" ref={deckDivRef}>
+        <div className="slides" dangerouslySetInnerHTML={{ __html: slides }} />
       </div>
-    </div>
+    </>
   );
 }

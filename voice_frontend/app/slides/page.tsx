@@ -9,6 +9,8 @@ export interface PageProps {
   };
 }
 
+export const revalidate = 0;
+
 export default async function Page({ searchParams }: PageProps) {
   const instructions = searchParams.instructions || "Presentation on how to build AI Agents";
 
@@ -18,11 +20,13 @@ export default async function Page({ searchParams }: PageProps) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ instructions }),
+    cache: "no-store"
   });
 
-  const html = await response.text();
+  const html = await response.json();
+  console.log(html);
 
   //   const html = "<section><h1>Heading</h1><p>Body</p></section>";
 
-  return <Slides slides={html} />;
+  return <Slides slides={html?.response} />;
 }
