@@ -10,19 +10,19 @@ export interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const instructions = searchParams.instructions || "";
+  const instructions = searchParams.instructions || "Presentation on how to build AI Agents";
 
-//   const response = await fetch("http://localhost:8000/slides", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({ instructions }),
-//   });
+  const response = await fetch("http://localhost:8000/slides", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ instructions }),
+  });
 
-  //   const html = await response.text();
+  const html = await response.text();
 
-  const html = "<section><h1>Heading</h1><p>Body</p></section>";
+  //   const html = "<section><h1>Heading</h1><p>Body</p></section>";
 
   return <Slides slides={html} />;
 }
