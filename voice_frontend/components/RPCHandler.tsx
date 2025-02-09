@@ -18,7 +18,12 @@ export default function SlidesRPCHandler() {
       console.log(
         `Received greeting from ${data.callerIdentity}: ${data.payload}`
       );
-      setSlides(data.payload);
+      try {
+        const payload = JSON.parse(data.payload);
+        setSlides(payload?.slides);
+      } catch (e) {
+        return "Invalid JSON";
+      }
       return `Hello, ${data.callerIdentity}!`;
     });
   }, []);

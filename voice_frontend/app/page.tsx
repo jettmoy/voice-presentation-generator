@@ -18,6 +18,8 @@ import { CloseIcon } from "@/components/CloseIcon";
 import { useKrispNoiseFilter } from "@livekit/components-react/krisp";
 import Slides from "@/components/Slides";
 import SlidesRPCHandler from "@/components/RPCHandler";
+import "reveal.js/dist/reveal.css";
+import "reveal.js/dist/theme/black.css"; // "black" theme is just an example
 
 export default function Page() {
   const [connectionDetails, updateConnectionDetails] = useState<
@@ -39,7 +41,7 @@ export default function Page() {
   return (
     <main
       data-lk-theme="default"
-      className="h-full flex flex-col bg-[var(--lk-bg)]"
+      className="h-full w-full flex flex-col bg-[var(--lk-bg)]"
     >
       <LiveKitRoom
         token={connectionDetails?.participantToken}
@@ -51,14 +53,18 @@ export default function Page() {
         onDisconnected={() => {
           updateConnectionDetails(undefined);
         }}
-        className="grid grid-rows-[2fr_1fr] items-center"
+        className="flex flex-col"
       >
-        <SlidesRPCHandler />
-        <SimpleVoiceAssistant onStateChange={setAgentState} />
-        <ControlBar
-          onConnectButtonClicked={onConnectButtonClicked}
-          agentState={agentState}
-        />
+        <div className="h-screen w-full">
+          <SlidesRPCHandler />
+        </div>
+        <div className="absolute bottom-0 w-full">
+          <SimpleVoiceAssistant onStateChange={setAgentState} />
+          <ControlBar
+            onConnectButtonClicked={onConnectButtonClicked}
+            agentState={agentState}
+          />
+        </div>
         <RoomAudioRenderer />
         <NoAgentNotification state={agentState} />
       </LiveKitRoom>
