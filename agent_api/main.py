@@ -22,23 +22,22 @@ load_dotenv(dotenv_path=".env.local")
 app = FastAPI()
 
 
-
 @app.post("/slides")
 async def create_slides(request: Instructions):
     # Call O3-mini model to generate slides
     response = await call_o3_mini(request.instructions)
     ic(response)
-    
-    # Check if there's an error in the response
-    if 'error' in response:
-        return {"error": response['error'], "details": response.get('details', '')}
-    
-    # Generate HTML from the Slides model
-    slides = generate_presentation_html(response['slides'].slides)
-    ic(slides)
-    
-    return {"response": slides}
+    return {"response": generate_presentation_html(response.slides)}
 
+    # Check if there's an error in the response
+    if "error" in response:
+        return {"error": response["error"], "details": response.get("details", "")}
+
+    # Generate HTML from the Slides model
+    slides = generate_presentation_html(response["slides"].slides)
+    ic(slides)
+
+    return {"response": slides}
 
 
 if __name__ == "__main__":

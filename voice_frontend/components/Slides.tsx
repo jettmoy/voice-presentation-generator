@@ -16,6 +16,7 @@ export function Slides({ slides }: { slides: string }) {
       transition: "slide",
       // other config options
       //   plugins: [RevealLoadContent],
+      autoSlide: 2
     });
 
     deckRef.current.initialize().then(() => {

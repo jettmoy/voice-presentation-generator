@@ -2,6 +2,7 @@ import { Slides } from "@/components/Slides";
 import Reveal from "reveal.js";
 import "reveal.js/dist/reveal.css";
 import "reveal.js/dist/theme/black.css"; // "black" theme is just an example
+// import "reveal.js/dist/theme/white.css";
 
 export interface PageProps {
   searchParams: {

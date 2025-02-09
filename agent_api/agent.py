@@ -8,7 +8,7 @@ from pydantic_ai import Agent
 from typing_extensions import TypedDict
 
 from datetime import datetime
-from .models import Slide, SlideContent, Slides
+from .models import Slide, SlideContent, Slides, SlideStyle
 import uuid
 
 import os
@@ -28,7 +28,7 @@ If there are detail slides needed, create them as children of the main slide
 with subection numbering; e.g 3.1, 3.2, 3.3 etc. 
 """
 
-async def call_o3_mini(prompt: str, max_tokens: int = 300) -> Dict[str, Any]:
+async def call_o3_mini(prompt: str, max_tokens: int = 300) -> Slides:
     """
     Call OpenAI's O3-mini model with a given prompt.
     
@@ -58,6 +58,7 @@ async def call_o3_mini(prompt: str, max_tokens: int = 300) -> Dict[str, Any]:
                         {
                             "title": "Slide Title",
                             "content": "Slide Content",
+                            "background": "#afafaf",
                             "bullets": ["Key Point 1", "Key Point 2"]
                         }
                     ]
@@ -71,8 +72,9 @@ async def call_o3_mini(prompt: str, max_tokens: int = 300) -> Dict[str, Any]:
         response = client.beta.chat.completions.parse(
             model="o3-mini",  # Specify the O3-mini model
             messages=messages,
-            response_format={"type": "json_object"}
+            response_format=Slides
         )
+        return response.choices[0].message.parsed
         
         # Extract the JSON response
         response_text = response.choices[0].message.content.strip()
@@ -96,6 +98,9 @@ async def call_o3_mini(prompt: str, max_tokens: int = 300) -> Dict[str, Any]:
             slide = Slide(
                 id=slide_id,
                 content=slide_content,
+                style=SlideStyle(
+                    background=slide_data.get('background', None)
+                ),
                 children=[
                     SlideContent(heading='', body=bullet) 
                     for bullet in slide_data.get('bullets', [])
