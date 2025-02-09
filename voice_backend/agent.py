@@ -41,7 +41,7 @@ def run_multimodal_agent(ctx: JobContext, participant: rtc.RemoteParticipant):
         modalities=["audio", "text"],
         voice="echo"
     )
-    assistant = MultimodalAgent(model=model, fnc_ctx=AssistantFnc())
+    assistant = MultimodalAgent(model=model, fnc_ctx=AssistantFnc(room=ctx.room))
     assistant.start(ctx.room, participant)
 
 

@@ -17,6 +17,7 @@ import { NoAgentNotification } from "@/components/NoAgentNotification";
 import { CloseIcon } from "@/components/CloseIcon";
 import { useKrispNoiseFilter } from "@livekit/components-react/krisp";
 import Slides from "@/components/Slides";
+import SlidesRPCHandler from "@/components/RPCHandler";
 
 export default function Page() {
   const [connectionDetails, updateConnectionDetails] = useState<
@@ -38,7 +39,7 @@ export default function Page() {
   return (
     <main
       data-lk-theme="default"
-      className="h-full grid content-center bg-[var(--lk-bg)]"
+      className="h-full flex flex-col bg-[var(--lk-bg)]"
     >
       <LiveKitRoom
         token={connectionDetails?.participantToken}
@@ -52,6 +53,7 @@ export default function Page() {
         }}
         className="grid grid-rows-[2fr_1fr] items-center"
       >
+        <SlidesRPCHandler />
         <SimpleVoiceAssistant onStateChange={setAgentState} />
         <ControlBar
           onConnectButtonClicked={onConnectButtonClicked}
